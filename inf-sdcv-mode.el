@@ -1,12 +1,12 @@
-;;; init-sdcv.el --- Use sdcv in emacs               -*- lexical-binding: t; -*-
+;;; inf-sdcv-mode.el --- Use sdcv in emacs               -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2022  qdzhang
 
 ;; Author: qdzhang <qdzhangcn@gmail.com>
 ;; Maintainer: qdzhang <qdzhangcn@gmail.com>
 ;; Created:  9 December 2022
-;; URL: https://github.com/qdzhang/emerit
-;; Version: 0.2
+;; URL: https://github.com/qdzhang/inf-sdcv-mode
+;; Version: 1.0
 ;; Keywords: tools, help
 ;; Package-Requires: ((emacs "27"))
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -41,7 +41,7 @@
 
 ;;; Code:
 
-(define-generic-mode 'sdcv-mode
+(define-generic-mode 'inf-sdcv-mode
   nil
   nil
   '(
@@ -60,22 +60,22 @@
   nil
   nil)
 
-(defvar sdcv-mode-syntax-table
+(defvar inf-sdcv-mode-syntax-table
   (let ((table (make-syntax-table)))
     ;; double quotes (") don't delimit strings
     (modify-syntax-entry ?\" "-" table)
     table)
-  "Syntax table used in `sdcv-mode'.")
+  "Syntax table used in `inf-sdcv-mode'.")
 
-(defun sdcv-return-from-sdcv ()
+(defun inf-sdcv-return-from-sdcv ()
   "Quit from sdcv buffer"
   (interactive)
   (bury-buffer)
   (unless (null (cdr (window-list))) ; only one window
     (delete-window)))
 
-(defun sdcv-mode-next-line ()
-  "In sdcv-mode, move to the next line. If outline-minor-mode hide the entry,
+(defun inf-sdcv-mode-next-line ()
+  "In inf-sdcv-mode, move to the next line. If outline-minor-mode hide the entry,
 show it."
   (interactive)
   (ignore-errors
@@ -85,8 +85,8 @@ show it."
       (when (looking-at outline-regexp)
         (show-entry)))))
 
-(defun sdcv-mode-previous-line ()
-  "In sdcv-mode, move to the previous line. If outline-minor-mode hide the entry,
+(defun inf-sdcv-mode-previous-line ()
+  "In inf-sdcv-mode, move to the previous line. If outline-minor-mode hide the entry,
 show it."
   (interactive)
   (ignore-errors
@@ -96,18 +96,19 @@ show it."
       (when (looking-at outline-regexp)
         (show-entry)))))
 
-(defvar sdcv--search-history nil)
-(defvar sdcv--search-history-position -1)
+(defvar inf-sdcv--search-history nil)
+(defvar inf-sdcv--search-history-position -1)
 
-(defun sdcv--append-current-word-to-search-history (word)
-  "Append current searching word to `sdcv--search-history'"
-  (setq sdcv--search-history
-        (append (cl-subseq sdcv--search-history
-                           0 (1+ sdcv--search-history-position))
+(defun inf-sdcv--append-current-word-to-search-history (word)
+  "Append current searching word to `inf-sdcv--search-history'"
+  (setq inf-sdcv--search-history
+        (append (cl-subseq inf-sdcv--search-history
+                           0 (1+ inf-sdcv--search-history-position))
                 (list word))
-        sdcv--search-history-position (1- (length sdcv--search-history))))
+        inf-sdcv--search-history-position (1- (length inf-sdcv--search-history))))
 
-(defun sdcv-search ()
+;;;###autoload
+(defun inf-sdcv-search ()
   "The main function to search for a word."
   (interactive)
   (let ((word (if mark-active
@@ -115,14 +116,14 @@ show it."
                 (current-word nil t))))
     (setq word (read-string (format "Search the dictionary for (default %s): " word)
                             nil nil word))
-    (sdcv--search-core word)))
+    (inf-sdcv--search-core word)))
 
-(defun sdcv--search-core (word)
-  "The core of `sdcv-search'."
+(defun inf-sdcv--search-core (word)
+  "The core of `inf-sdcv-search'."
   (unless (string= word
-                   (nth sdcv--search-history-position
-                        sdcv--search-history))
-    (sdcv--append-current-word-to-search-history word))
+                   (nth inf-sdcv--search-history-position
+                        inf-sdcv--search-history))
+    (inf-sdcv--append-current-word-to-search-history word))
   (set-buffer (get-buffer-create "*sdcv*"))
   (buffer-disable-undo)
   (setq buffer-read-only nil)
@@ -137,85 +138,85 @@ show it."
                (goto-char (point-min))
                (setq buffer-read-only t))
            (switch-to-buffer-other-window "*sdcv*")
-           (sdcv-mode)
+           (inf-sdcv-mode)
            (goto-char (point-min))))))))
 
-(defun sdcv-search-history-backwards ()
+(defun inf-sdcv-search-history-backwards ()
   "Search the previous word searched."
   (interactive)
-  (if (> sdcv--search-history-position 0)
-      (sdcv--search-core (nth (setq sdcv--search-history-position
-                                    (1- sdcv--search-history-position))
-                              sdcv--search-history))
+  (if (> inf-sdcv--search-history-position 0)
+      (inf-sdcv--search-core (nth (setq inf-sdcv--search-history-position
+                                        (1- inf-sdcv--search-history-position))
+                                  inf-sdcv--search-history))
     (message "At start of search history.")))
 
-(defun sdcv-search-history-forwards ()
+(defun inf-sdcv-search-history-forwards ()
   "Search the next word searched."
   (interactive)
-  (if (> (length sdcv--search-history) sdcv--search-history-position)
-      (sdcv--search-core (nth (setq sdcv--search-history-position
-                                    (1+ sdcv--search-history-position))
-                              sdcv--search-history))
+  (if (> (length inf-sdcv--search-history) inf-sdcv--search-history-position)
+      (inf-sdcv--search-core (nth (setq inf-sdcv--search-history-position
+                                        (1+ inf-sdcv--search-history-position))
+                                  inf-sdcv--search-history))
     (message "At end of search history.")))
 
-(defvar sdcv-dict-list nil
+(defvar inf-sdcv--dict-list nil
   "All dicts of sdcv")
 
-(defun sdcv-list-dictionary ()
+(defun inf-sdcv--list-dictionary ()
   "Show available dictionaries."
   (interactive)
   (let (resize-mini-windows)
     (shell-command-to-string "sdcv -l 2>/dev/null")))
 
-(defun sdcv--parse-dictionary-list ()
+(defun inf-sdcv--parse-dictionary-list ()
   "Parse the output of `sdcv -l'"
   (interactive)
-  (let* ((sdcv-output (sdcv-list-dictionary))
+  (let* ((sdcv-output (inf-sdcv--list-dictionary))
          (sdcv-lines (cdr (split-string sdcv-output "    \\|\n"))))
     (setq sdcv-lines (cl-remove-if (lambda (x) (> (string-to-number x) 0)) sdcv-lines))
     (setq sdcv-lines (cl-remove-if (lambda (x) (equal x "")) sdcv-lines))
-    (setq sdcv-dict-list sdcv-lines)))
+    (setq inf-sdcv--dict-list sdcv-lines)))
 
-(defun sdcv-jump-to-dictionary ()
+(defun inf-sdcv-jump-to-dictionary ()
   "List all available dictionaries, and jump to the selected one"
   (interactive)
-  (sdcv--parse-dictionary-list)
+  (inf-sdcv--parse-dictionary-list)
   (let ((target (completing-read "Select a dict:"
-                                 sdcv-dict-list nil t)))
+                                 inf-sdcv--dict-list nil t)))
     (search-forward (concat "-->" target))
     (beginning-of-line)))
 
-(defvar sdcv-mode-map
+(defvar inf-sdcv-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map "<" 'beginning-of-buffer)
     (define-key map ">" 'end-of-buffer)
-    (define-key map "q" 'sdcv-return-from-sdcv)
+    (define-key map "q" 'inf-sdcv-return-from-sdcv)
     (define-key map "s" 'isearch-forward-regexp)
     (define-key map (kbd "C-s") 'isearch-forward)
     (define-key map (kbd "C-r") 'isearch-backward)
     (define-key map (kbd "C-n") 'next-line)
-    (define-key map "n" 'sdcv-mode-next-line)
+    (define-key map "n" 'inf-sdcv-mode-next-line)
     (define-key map (kbd "C-p") 'previous-line)
-    (define-key map "p" 'sdcv-mode-previous-line)
-    (define-key map "j" 'sdcv-jump-to-dictionary)
-    (define-key map "d" 'sdcv-search)
-    (define-key map "l" 'sdcv-search-history-backwards)
-    (define-key map "r" 'sdcv-search-history-forwards)
+    (define-key map "p" 'inf-sdcv-mode-previous-line)
+    (define-key map "j" 'inf-sdcv-jump-to-dictionary)
+    (define-key map "d" 'inf-sdcv-search)
+    (define-key map "l" 'inf-sdcv-search-history-backwards)
+    (define-key map "r" 'inf-sdcv-search-history-forwards)
     (define-key map "?" 'describe-mode)
     (define-key map "a" 'outline-show-all)
     (define-key map "h" 'outline-hide-body)
     (define-key map "e" 'outline-show-entry)
     (define-key map "c" 'outline-hide-entry)
     map)
-  "Keymap for `sdcv-mode'.")
+  "Keymap for `inf-sdcv-mode'.")
 
-(add-hook 'sdcv-mode-hook
+(add-hook 'inf-sdcv-mode-hook
           (lambda ()
-            (use-local-map sdcv-mode-map)
-            (set-syntax-table sdcv-mode-syntax-table)
+            (use-local-map inf-sdcv-mode-map)
+            (set-syntax-table inf-sdcv-mode-syntax-table)
             (set (make-local-variable 'outline-regexp) "^-->.*\n-->")
             (setq buffer-read-only t)
             (outline-minor-mode)))
 
-(provide 'init-sdcv)
-;;; init-sdcv.el ends here
+(provide 'inf-sdcv-mode)
+;;; inf-sdcv-mode.el ends here
