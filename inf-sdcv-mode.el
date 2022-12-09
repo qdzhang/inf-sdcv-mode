@@ -6,7 +6,7 @@
 ;; Maintainer: qdzhang <qdzhangcn@gmail.com>
 ;; Created:  9 December 2022
 ;; URL: https://github.com/qdzhang/inf-sdcv-mode
-;; Version: 1.0
+;; Version: 1.1
 ;; Keywords: tools, help
 ;; Package-Requires: ((emacs "27"))
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -216,6 +216,7 @@ show it."
             (set-syntax-table inf-sdcv-mode-syntax-table)
             (set (make-local-variable 'outline-regexp) "^-->.*\n-->")
             (setq buffer-read-only t)
+            (variable-pitch-mode)
             (outline-minor-mode)))
 
 (provide 'inf-sdcv-mode)
