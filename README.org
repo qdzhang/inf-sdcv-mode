@@ -1,0 +1,37 @@
+* inf-sdcv-mode
+
+Inferior sdcv mode to search words.
+
+There is already a sdcv-mode written by the original author:
+https://github.com/pluskid/sdcv-mode
+But I only need a few functions, so I write this simpler version.
+
+** Installation
+Download the repository, then
+
+#+begin_src elisp
+(load "/path/to/inf-sdcv-mode.el")
+(require 'inf-sdcv-mode)
+#+end_src
+
+** Usage
+Bind the main function =inf-sdcv-search= to your favorite key. For example, I
+use =C-c d= (this keybindings is not default).
+
+** Keybindings
+The keybings of  =inf-sdcv-mode-map= is:
+
+| keybindings | description                                               |
+|-------------+-----------------------------------------------------------|
+| =j=         | jump to the specific dictionary                           |
+| =r=         | search history backward                                   |
+| =l=         | search history forward                                    |
+| =h=         | hide all dicts contents, only show the name of dictionary |
+| =a=         | show all contents                                         |
+| =e=         | show entry                                                |
+| =c=         | hide entry                                                |
+
+** Credit
+Original author: pluskid
+Ref: https://lifegoo.pluskid.org/wiki/EmacsStardict.html
+

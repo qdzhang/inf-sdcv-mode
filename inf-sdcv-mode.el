@@ -1,21 +1,43 @@
 ;;; init-sdcv.el --- Use sdcv in emacs               -*- lexical-binding: t; -*-
 
-;;; Original commentary:
+;; Copyright (C) 2022  qdzhang
 
-;; Original author: pluskid
-;; Ref: https://lifegoo.pluskid.org/wiki/EmacsStardict.html
-;;
-;; 调用 stardict 的命令行程序 sdcv 来查辞典
-;; 如果选中了 region 就查询 region 的内容，否则查询当前光标所在的单词
-;; 查询结果在一个叫做 *sdcv* 的 buffer 里面显示出来，在这个 buffer 里面
-;; 按 q 可以把这个 buffer 放到 buffer 列表末尾，按 d 可以查询单词
-;;
+;; Author: qdzhang <qdzhangcn@gmail.com>
+;; Maintainer: qdzhang <qdzhangcn@gmail.com>
+;; Created:  9 December 2022
+;; URL: https://github.com/qdzhang/emerit
+;; Version: 0.2
+;; Keywords: tools, help
+;; Package-Requires: ((emacs "27"))
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+;; This file is not part of GNU Emacs.
+
+;;; License:
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
 ;; There is already a sdcv-mode written by the original author:
 ;; https://github.com/pluskid/sdcv-mode
 ;; But I only need a few functions, so I write this simpler version.
+
+;;; Credit:
+
+;; Original author: pluskid
+;; Ref: https://lifegoo.pluskid.org/wiki/EmacsStardict.html
 
 ;;; Code:
 
