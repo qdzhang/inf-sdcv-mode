@@ -6,7 +6,7 @@
 ;; Maintainer: qdzhang <qdzhangcn@gmail.com>
 ;; Created:  9 December 2022
 ;; URL: https://github.com/qdzhang/inf-sdcv-mode
-;; Version: 1.1
+;; Version: 1.2
 ;; Keywords: tools, help
 ;; Package-Requires: ((emacs "27"))
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -124,20 +124,20 @@ show it."
                    (nth inf-sdcv--search-history-position
                         inf-sdcv--search-history))
     (inf-sdcv--append-current-word-to-search-history word))
-  (set-buffer (get-buffer-create "*sdcv*"))
+  (set-buffer (get-buffer-create "inf-sdcv*"))
   (buffer-disable-undo)
   (setq buffer-read-only nil)
   (erase-buffer)
-  (let ((process (start-process-shell-command "sdcv" "*sdcv*" (concat "sdcv " "-n " word))))
+  (let ((process (start-process-shell-command "sdcv" "inf-sdcv*" (concat "sdcv " "-n " word))))
     (set-process-sentinel
      process
      (lambda (process signal)
        (when (memq (process-status process) '(exit signal))
-         (if (string= (buffer-name) "*sdcv*")
+         (if (string= (buffer-name) "inf-sdcv*")
              (progn
                (goto-char (point-min))
                (setq buffer-read-only t))
-           (switch-to-buffer-other-window "*sdcv*")
+           (switch-to-buffer-other-window "inf-sdcv*")
            (inf-sdcv-mode)
            (goto-char (point-min))))))))
 
@@ -183,8 +183,10 @@ show it."
   (inf-sdcv--parse-dictionary-list)
   (let ((target (completing-read "Select a dict:"
                                  inf-sdcv--dict-list nil t)))
+    (beginning-of-buffer)
     (search-forward (concat "-->" target))
-    (beginning-of-line)))
+    (beginning-of-line)
+    (recenter 1)))
 
 (defvar inf-sdcv-mode-map
   (let ((map (make-sparse-keymap)))
