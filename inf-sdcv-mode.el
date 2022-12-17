@@ -188,6 +188,23 @@ show it."
     (beginning-of-line)
     (recenter 1)))
 
+(defun inf-sdcv-jump-to-next-dictonary ()
+  "Jump to next dictionary."
+  (interactive)
+  (end-of-line)
+  (search-forward "-->")
+  (beginning-of-line)
+  (recenter 1))
+
+(defun inf-sdcv-jump-to-previous-dictonary ()
+  "Jump to previous dictionary."
+  (interactive)
+  (previous-line)
+  (search-backward "-->")
+  (beginning-of-line)
+  (recenter 1))
+
+
 (defvar inf-sdcv-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map "<" 'beginning-of-buffer)
@@ -201,6 +218,8 @@ show it."
     (define-key map (kbd "C-p") 'previous-line)
     (define-key map "p" 'inf-sdcv-mode-previous-line)
     (define-key map "j" 'inf-sdcv-jump-to-dictionary)
+    (define-key map "N" 'inf-sdcv-jump-to-next-dictonary)
+    (define-key map "P" 'inf-sdcv-jump-to-previous-dictonary)
     (define-key map "d" 'inf-sdcv-search)
     (define-key map "l" 'inf-sdcv-search-history-backwards)
     (define-key map "r" 'inf-sdcv-search-history-forwards)

@@ -28,10 +28,17 @@ The keybings of  =inf-sdcv-mode-map= is:
 | =l=         | search history forward                                    |
 | =h=         | hide all dicts contents, only show the name of dictionary |
 | =a=         | show all contents                                         |
-| =e=         | show entry                                                |
-| =c=         | hide entry                                                |
+| =e=         | show current dictionary contents                          |
+| =c=         | hide current dictionary contents                          |
+| =N=         | next dictionary                                           |
+| =P=         | previous dictionary                                       |
 
 ** Credit
 Original author: pluskid
 Ref: https://lifegoo.pluskid.org/wiki/EmacsStardict.html
+
+** Similar projects
+- https://github.com/pluskid/sdcv-mode/
+- https://github.com/manateelazycat/sdcv
+- https://github.com/tumashu/chinese-yasdcv
 
