@@ -6,7 +6,7 @@
 ;; Maintainer: qdzhang <qdzhangcn@gmail.com>
 ;; Created:  9 December 2022
 ;; URL: https://github.com/qdzhang/inf-sdcv-mode
-;; Version: 1.2
+;; Version: 1.3
 ;; Keywords: tools, help
 ;; Package-Requires: ((emacs "27"))
 ;; SPDX-License-Identifier: GPL-3.0-or-later
@@ -79,22 +79,22 @@
 show it."
   (interactive)
   (ignore-errors
-    (next-line 1)
+    (forward-line 1)
     (save-excursion
       (beginning-of-line nil)
       (when (looking-at outline-regexp)
-        (show-entry)))))
+        (outline-show-entry)))))
 
 (defun inf-sdcv-mode-previous-line ()
-  "In inf-sdcv-mode, move to the previous line. If outline-minor-mode hide the entry,
-show it."
+  "In inf-sdcv-mode, move to the previous line. If outline-minor-mode hide the
+entry, show it."
   (interactive)
   (ignore-errors
-    (previous-line 1)
+    (forward-line -1)
     (save-excursion
       (beginning-of-line nil)
       (when (looking-at outline-regexp)
-        (show-entry)))))
+        (outline-show-entry)))))
 
 (defvar inf-sdcv--search-history nil)
 (defvar inf-sdcv--search-history-position -1)
@@ -189,7 +189,7 @@ show it."
   (inf-sdcv--parse-dictionary-list)
   (let ((target (completing-read "Select a dict:"
                                  inf-sdcv--dict-list nil t)))
-    (beginning-of-buffer)
+    (goto-char (point-min))
     (search-forward (concat "-->" target))
     (beginning-of-line)
     (recenter 1)))
@@ -205,7 +205,7 @@ show it."
 (defun inf-sdcv-jump-to-previous-dictonary ()
   "Jump to previous dictionary."
   (interactive)
-  (previous-line)
+  (forward-line -1)
   (search-backward "-->")
   (beginning-of-line)
   (recenter 1))
