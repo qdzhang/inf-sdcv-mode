@@ -118,6 +118,12 @@ show it."
                             nil nil word))
     (inf-sdcv--search-core word)))
 
+;;;###autoload
+(defun inf-sdcv-search-at-point ()
+  "Search current word at point using sdcv"
+  (interactive)
+  (inf-sdcv--search-core (current-word)))
+
 (defun inf-sdcv--search-core (word)
   "The core of `inf-sdcv-search'."
   (unless (string= word
