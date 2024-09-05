@@ -2,6 +2,8 @@
 
 Inferior sdcv mode to search words.
 
+[[inf-sdcv-mode.png]]
+
 There is already a sdcv-mode written by the original author:
 https://github.com/pluskid/sdcv-mode
 But I only need a few functions, so I write this simpler version.
