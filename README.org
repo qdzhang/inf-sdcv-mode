@@ -16,6 +16,10 @@ Download the repository, then
 (require 'inf-sdcv-mode)
 #+end_src
 
+*** Optional
+If you want to pronounce a word, put the =mw-audio= file in your =$PATH=.
+
+
 ** Usage
 Bind the main function =inf-sdcv-search= to your favorite key. For example, I
 use =C-c d= (this keybindings is not default).
@@ -34,6 +38,7 @@ The keybings of  =inf-sdcv-mode-map= is:
 | =c=         | hide current dictionary contents                          |
 | =N=         | next dictionary                                           |
 | =P=         | previous dictionary                                       |
+| =s=         | pronounce a word                                          |
 
 ** Credit
 Original author: pluskid

@@ -1,0 +1,65 @@
+#!/usr/bin/env ruby
+
+# Get the pronunciation of a word from Merriam-Webster
+
+require "open-uri"
+require "cgi"
+require "fileutils"
+
+require "bundler/inline"
+
+gemfile do
+  source "https://mirrors.bfsu.edu.cn/rubygems/"
+  # add gems you need here
+  gem "down", "~> 5.0"
+  gem "nokogiri"
+  require "nokogiri"
+end
+
+# Put the word you want to search in the command line argument
+if ARGV.size != 1
+  raise "input only one word!"
+else
+  word = ARGV[0]
+end
+
+# Check if the word audio file exists
+audio_dir = "#{Dir.home}/Music/anki/sdcv/"
+audio_file_name = "#{word}.mp3"
+audio_full_name = audio_dir + audio_file_name
+
+unless File.exist?(audio_full_name)
+  # Get the audio file from website
+  user_agent =
+    "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0"
+
+  url = "https://www.merriam-webster.com/dictionary/#{word}"
+  html = URI.parse(url).open
+  doc = Nokogiri.HTML5(html)
+
+  pron_btn = doc.css("a.play-pron-v2").first
+  pron_href = pron_btn[:href]
+  pron_uri = URI.parse(pron_href)
+
+  pron_query = CGI.parse(pron_uri.query)
+  pron_dir = pron_query["dir"][0]
+  pron_file = pron_query["file"][0]
+
+  pron_actual_url =
+    "https://media.merriam-webster.com/audio/prons/en/us/mp3/#{pron_dir}/#{pron_file}.mp3"
+
+  # write to file
+  tempfile = Down.download(pron_actual_url)
+  begin
+    FileUtils.mv(tempfile.path, audio_full_name)
+  ensure
+    tempfile.close
+    tempfile.unlink
+  end
+end
+
+# Copy the audio file to clipboard
+fork do
+  `echo "file://#{audio_full_name}" | xclip -in -selection clipboard -target "text/uri-list"`
+  exit!
+end

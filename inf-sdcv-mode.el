@@ -67,6 +67,11 @@
     table)
   "Syntax table used in `inf-sdcv-mode'.")
 
+(defvar inf-sdcv-current-word "")
+
+(defvar inf-sdcv-sound-dir "~/Music/anki/sdcv/"
+  "The directory to store the sound files.")
+
 (defun inf-sdcv-return-from-sdcv ()
   "Quit from sdcv buffer"
   (interactive)
@@ -116,13 +121,15 @@ entry, show it."
                 (current-word nil t))))
     (setq word (read-string (format "Search the dictionary for (default %s): " word)
                             nil nil word))
+    (setq inf-sdcv-current-word word)
     (inf-sdcv--search-core word)))
 
 ;;;###autoload
 (defun inf-sdcv-search-at-point ()
   "Search current word at point using sdcv"
   (interactive)
-  (inf-sdcv--search-core (current-word)))
+  (inf-sdcv--search-core (current-word))
+  (setq inf-sdcv-current-word))
 
 (defun inf-sdcv--search-core (word)
   "The core of `inf-sdcv-search'."
@@ -211,12 +218,21 @@ entry, show it."
   (recenter 1))
 
 
+(defun inf-sdcv-sound ()
+  "Play the pronouncation of current word"
+  (interactive)
+  (setq inf-sdcv--sound-full-name (concat (expand-file-name inf-sdcv-sound-dir) inf-sdcv-current-word ".mp3"))
+  (when (executable-find "mw-audio")
+    (start-process "mw-audio" "*mw-audio*" "mw-audio" inf-sdcv-current-word)
+    (start-process "mpg123" "*mw-audio*" "mpg123" "-q" inf-sdcv--sound-full-name)))
+
+
 (defvar inf-sdcv-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map "<" 'beginning-of-buffer)
     (define-key map ">" 'end-of-buffer)
     (define-key map "q" 'inf-sdcv-return-from-sdcv)
-    (define-key map "s" 'isearch-forward-regexp)
+    (define-key map "s" 'inf-sdcv-sound)
     (define-key map (kbd "C-s") 'isearch-forward)
     (define-key map (kbd "C-r") 'isearch-backward)
     (define-key map (kbd "C-n") 'next-line)
