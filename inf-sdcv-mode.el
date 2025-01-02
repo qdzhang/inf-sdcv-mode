@@ -217,16 +217,18 @@ entry, show it."
   (beginning-of-line)
   (recenter 1))
 
-(defun inf-sdcv-sound-after-download (process msg)
+(defun inf-sdcv-sound-play (process msg)
   (when (memq (process-status process) '(exit signal))
     (message (concat (process-name process) ": audio download successfully."))
     ;; Play the audio file
-    (start-process "mpg123" "*mw-audio*" "mpg123" "-q" (inf-sdcv--sound-full-path))
-    ;; Copy the file URI to clipboard
-    (with-temp-buffer
-      (insert
-       (concat "file://" (inf-sdcv--sound-full-path)))
-      (clipboard-kill-region (point-min) (point-max)))))
+    (start-process "mpg123" "*mw-audio*" "mpg123" "-q" (inf-sdcv--sound-full-path))))
+
+(defun inf-sdcv-sound-copy ()
+  "Copy sound file URI to clipboard"
+  (interactive)
+  (gui-set-selection 'CLIPBOARD (concat "file://" (inf-sdcv--sound-full-path)))
+  (message "File URI copied."))
+
 
 (defun inf-sdcv--sound-full-path ()
   "Concatenate the full path of the sound file"
@@ -238,8 +240,7 @@ entry, show it."
   (when (executable-find "mw-audio")
     (set-process-sentinel
      (start-process "mw-audio" "*mw-audio*" "mw-audio" inf-sdcv-current-word)
-     'inf-sdcv-sound-after-download)))
-
+     'inf-sdcv-sound-play)))
 
 (defvar inf-sdcv-mode-map
   (let ((map (make-sparse-keymap)))
@@ -263,7 +264,8 @@ entry, show it."
     (define-key map "a" 'outline-show-all)
     (define-key map "h" 'outline-hide-body)
     (define-key map "e" 'outline-show-entry)
-    (define-key map "c" 'outline-hide-entry)
+    (define-key map "m" 'outline-hide-entry)
+    (define-key map "c" 'inf-sdcv-sound-copy)
     map)
   "Keymap for `inf-sdcv-mode'.")
 

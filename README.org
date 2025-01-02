@@ -36,10 +36,12 @@ The keybings of  =inf-sdcv-mode-map= is:
 | =h=         | hide all dicts contents, only show the name of dictionary |
 | =a=         | show all contents                                         |
 | =e=         | show current dictionary contents                          |
-| =c=         | hide current dictionary contents                          |
+| =m=         | hide current dictionary contents                          |
 | =N=         | next dictionary                                           |
 | =P=         | previous dictionary                                       |
 | =s=         | pronounce a word                                          |
+| =c=         | copy the pronunciation file URI to clipboard              |
+
 
 ** Credit
 Original author: pluskid
