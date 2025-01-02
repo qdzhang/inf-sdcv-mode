@@ -57,9 +57,3 @@ unless File.exist?(audio_full_name)
     tempfile.unlink
   end
 end
-
-# Copy the audio file to clipboard
-fork do
-  `echo "file://#{audio_full_name}" | xclip -in -selection clipboard -target "text/uri-list"`
-  exit!
-end

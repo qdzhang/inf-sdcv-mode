@@ -217,14 +217,28 @@ entry, show it."
   (beginning-of-line)
   (recenter 1))
 
+(defun inf-sdcv-sound-after-download (process msg)
+  (when (memq (process-status process) '(exit signal))
+    (message (concat (process-name process) ": audio download successfully."))
+    ;; Play the audio file
+    (start-process "mpg123" "*mw-audio*" "mpg123" "-q" (inf-sdcv--sound-full-path))
+    ;; Copy the file URI to clipboard
+    (with-temp-buffer
+      (insert
+       (concat "file://" (inf-sdcv--sound-full-path)))
+      (clipboard-kill-region (point-min) (point-max)))))
+
+(defun inf-sdcv--sound-full-path ()
+  "Concatenate the full path of the sound file"
+  (concat (expand-file-name inf-sdcv-sound-dir) inf-sdcv-current-word ".mp3"))
 
 (defun inf-sdcv-sound ()
   "Play the pronouncation of current word"
   (interactive)
-  (setq inf-sdcv--sound-full-name (concat (expand-file-name inf-sdcv-sound-dir) inf-sdcv-current-word ".mp3"))
   (when (executable-find "mw-audio")
-    (start-process "mw-audio" "*mw-audio*" "mw-audio" inf-sdcv-current-word)
-    (start-process "mpg123" "*mw-audio*" "mpg123" "-q" inf-sdcv--sound-full-name)))
+    (set-process-sentinel
+     (start-process "mw-audio" "*mw-audio*" "mw-audio" inf-sdcv-current-word)
+     'inf-sdcv-sound-after-download)))
 
 
 (defvar inf-sdcv-mode-map

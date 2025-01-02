@@ -17,7 +17,8 @@ Download the repository, then
 #+end_src
 
 *** Optional
-If you want to pronounce a word, put the =mw-audio= file in your =$PATH=.
+If you want to pronounce a word, put the =mw-audio= file in your =$PATH=. The
+variable =inf-sdcv-sound-dir= will set the directory of the audio files.
 
 
 ** Usage
