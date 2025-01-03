@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+# Get the pronunciation of a word from Cambridge Dictionary
+
+require "open-uri"
+require "fileutils"
+
+require "bundler/inline"
+
+gemfile do
+  source "https://mirrors.bfsu.edu.cn/rubygems/"
+  # add gems you need here
+  gem "down", "~> 5.0"
+  gem "nokogiri"
+  require "nokogiri"
+end
+
+# Put the word you want to search in the command line argument
+if ARGV.size != 1
+  raise "input only one word!"
+else
+  word = ARGV[0]
+end
+
+# Check if the word audio file exists
+audio_dir = "#{Dir.home}/Music/anki/sdcv/"
+audio_file_name = "#{word}.mp3"
+audio_full_name = audio_dir + audio_file_name
+
+unless File.exist?(audio_full_name)
+  # Get the audio file from website
+  user_agent =
+    "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0"
+
+  url = "https://dictionary.cambridge.org/dictionary/english/#{word}"
+  html = URI.parse(url).open
+  doc = Nokogiri.HTML5(html)
+
+  pron_btn = doc.css("span.us audio source[type=\"audio/mpeg\"]")
+  pron_src = pron_btn.css("> @src")
+
+  pron_actual_url = "https://dictionary.cambridge.org#{pron_src}"
+
+  # write to file
+  tempfile = Down.download(pron_actual_url)
+  begin
+    FileUtils.mv(tempfile.path, audio_full_name)
+  ensure
+    tempfile.close
+    tempfile.unlink
+  end
+end
